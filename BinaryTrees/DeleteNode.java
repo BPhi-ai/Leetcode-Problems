@@ -1,31 +1,48 @@
 package BinaryTrees;
 
-public class SearchBST {
+public class DeleteNode {
     public static void main(String[] args) {
-        TreeNode root = new TreeNode(4);
-        root.left = new TreeNode(2);
-        root.right = new TreeNode(7);
-        root.left.left = new TreeNode(1);
-        root.left.right = new TreeNode(3);
+        TreeNode root = new TreeNode(5);
+        root.left = new TreeNode(3);
+        root.right = new TreeNode(6);
+        root.left.left = new TreeNode(2);
+        root.left.right = new TreeNode(4);
+        root.right.left = null;
+        root.right.right = new TreeNode(7);
 
-        int val = 2;
-        TreeNode result = searchBST(root, val);
+        int key = 3;
+        TreeNode result = deleteNode(root, key);
         printLevelOrder(result);
-        
     }
 
-    public static TreeNode searchBST(TreeNode root, int val) {
+    public static TreeNode deleteNode(TreeNode root, int key) {
+        //scenario if root is null
         if(root == null) {
             return null;
         }
-        if(root.val == val) {
-            return root;
-        }
-        if(val < root.val) {
-            return searchBST(root.left, val);
+        //finding the key of which the node is deleted.
+        if(key < root.val) {
+            root.left = deleteNode(root.left, key);
+        } else if (key > root.val) {
+            root.right = deleteNode(root.right, key);
         } else {
-            return searchBST(root.right, val);
+            if(root.left == null) {
+                return root.right;
+            } else if (root.right == null) {
+                return root.left;
+            }
+            TreeNode node = findSuc(root.right);
+            root.val = node.val;
+            root.right = deleteNode(root.right, root.val);
         }
+        return root;
+    }
+
+    public static TreeNode findSuc(TreeNode node) {
+        while(node.left != null) {
+            node = node.left;
+        }
+        return node;
     }
 
     public static int height(TreeNode root)
